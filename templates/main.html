@@ -1,0 +1,39 @@
+<html>
+
+<head>
+    <title>
+        Hot Tunes
+    </title>
+</head>
+
+<body>
+    <p>
+        {% autoescape false%}
+        {{ question }}
+        {% endautoescape %}
+    </p>
+    <p>
+        <input type="radio" name="answerChoice" id="answerChoice0" value="{{ answer }}">
+        {{ answer }}
+        <br>
+        <input type="radio" name="answerChoice" id="answerChoice1" value="{{ decoy1 }}">
+        {{ decoy1 }}
+        <br>
+        <input type="radio" name="answerChoice" id="answerChoice2" value="{{ decoy2 }}">
+        {{ decoy2 }}
+        <br>
+        <input type="button" value="Submit" onclick="checkAnswer();">
+    </p>
+</body>
+
+<script>
+    function checkAnswer() {
+        let answerGiven = document.querySelector("input[name='answerChoice']:checked").value;
+        console.log(answerGiven);
+        if (answerGiven === '{{ answer | safe }}') {
+            alert("You got it! Hit refresh to go again!");
+        }
+    }
+</script>
+
+</html>

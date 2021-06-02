@@ -1,0 +1,6 @@
+CLIENT_ACCESS_TOKEN = "RN78pDFApItzD_8QIwEVojU7HpLTszS8CcF9lBdnSVgAz6QZddJ2ft5CTV5q8yk4"
+ALBUM_NAME = "Camp Rock (Music from the Disney Channel Original Movie)"
+ARTIST = "Cast of Camp Rock"
+LYRICS_JSON = "./Lyrics_CampRockMusicfromtheDisneyChannelOriginalMovie.json"
+LYRICS_FOLDER_NAME = "./Lyrics"
+TEMPLATE_LYRICS_FILENAME = "./Lyrics/{}.txt"
