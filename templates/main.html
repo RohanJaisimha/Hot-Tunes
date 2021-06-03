@@ -13,15 +13,8 @@
         {% endautoescape %}
     </p>
     <p>
-        <input type="radio" name="answerChoice" id="answerChoice0" value="{{ answer }}">
-        {{ answer }}
-        <br>
-        <input type="radio" name="answerChoice" id="answerChoice1" value="{{ decoy1 }}">
-        {{ decoy1 }}
-        <br>
-        <input type="radio" name="answerChoice" id="answerChoice2" value="{{ decoy2 }}">
-        {{ decoy2 }}
-        <br>
+        <div id="answerChoices">
+        </div>
         <input type="button" value="Submit" onclick="checkAnswer();">
     </p>
 </body>
@@ -29,11 +22,38 @@
 <script>
     function checkAnswer() {
         let answerGiven = document.querySelector("input[name='answerChoice']:checked").value;
-        console.log(answerGiven);
-        if (answerGiven === '{{ answer | safe }}') {
+        if (answerGiven === answer) {
             alert("You got it! Hit refresh to go again!");
         }
     }
+    function shuffle(arr) {
+        for(let i = 0; i < arr.length; i += 1) {
+            let idx1 = Math.floor(Math.random() * arr.length);
+            let idx2 = Math.floor(Math.random() * arr.length);
+            let t = arr[idx1];
+            arr[idx1] = arr[idx2];
+            arr[idx2] = t;
+        }
+        return arr;
+    }
+    function inputAnswers() {
+        let answerChoices = [
+            '{{ decoy1 | safe }}', 
+            '{{ decoy2 | safe }}', 
+            '{{ answer | safe }}'
+        ];
+        console.log(answerChoices);
+        answerChoices = shuffle(answerChoices);
+        console.log(answerChoices);
+        document.querySelector("#answerChoices").innerHTML =
+            `<input type="radio" name="answerChoice" id="answerChoice0" value="${answerChoices[0]}">${answerChoices[0]}` +
+            `<br>` +  
+            `<input type="radio" name="answerChoice" id="answerChoice1" value="${answerChoices[1]}">${answerChoices[1]}` +
+            `<br>` +
+            `<input type="radio" name="answerChoice" id="answerChoice2" value="${answerChoices[2]}">${answerChoices[2]}`;
+    }
+    let answer = '{{ answer | safe }}';
+    inputAnswers();
 </script>
 
 </html>

@@ -33,7 +33,10 @@ def createQuestion() -> List[str]:
     possibleCandidatesToRemove = list(
         filter(lambda word: len(word) > 4, wordsInRandomLines)
     )
-    answer = random.sample(possibleCandidatesToRemove, 2)
+    idxAnswer1 = random.randrange(0, len(possibleCandidatesToRemove) - 1)
+    idxAnswer2 = random.randrange(idxAnswer1 + 1, len(possibleCandidatesToRemove))
+    answer = list(map(possibleCandidatesToRemove.__getitem__, [idxAnswer1, idxAnswer2]))
+
     randomLines = randomLines.replace(answer[0], "______", 1).replace(
         answer[1], "______", 1
     )
