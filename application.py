@@ -16,11 +16,15 @@ def getRandomLines(filename: str) -> str:
     return " <br> ".join(lines[randomIdx : randomIdx + 5])
 
 
-def getSynonyms(word1: str, word2: str) -> List[List[str]]:
-    synonymsOfWord1 = PyDictionary().synonym(word1)
-    synonymsOfWord2 = PyDictionary().synonym(word2)
+def getDecoys(word1: str, word2: str) -> List[List[str]]:
+    decoysForWord1 = PyDictionary().synonym(word1) + PyDictionary().antonym(word1)
+    decoysForWord2 = PyDictionary().synonym(word2) + PyDictionary().antonym(word2)
+     
+    decoysForWord1 = list(set(decoysForWord1))
+    decoysForWord2 = list(set(decoysForWord2))
+
     return list(
-        zip(random.sample(synonymsOfWord1, 2), random.sample(synonymsOfWord2, 2))
+        zip(random.sample(decoysForWord1, 2), random.sample(decoysForWord2, 2))
     )
 
 
@@ -31,7 +35,7 @@ def createQuestion() -> List[str]:
     randomLines = getRandomLines(randomLyricsFileWithPath)
     wordsInRandomLines = randomLines.strip().split()
     possibleCandidatesToRemove = list(
-        filter(lambda word: len(word) > 4, wordsInRandomLines)
+        set(filter(lambda word: len(word) > 4, wordsInRandomLines))
     )
     idxAnswer1 = random.randrange(0, len(possibleCandidatesToRemove) - 1)
     idxAnswer2 = random.randrange(idxAnswer1 + 1, len(possibleCandidatesToRemove))
@@ -42,7 +46,7 @@ def createQuestion() -> List[str]:
     )
 
     answer = list(map(lambda word: re.sub(r"[^A-Za-z0-9]", "", word), answer))
-    decoy1, decoy2 = getSynonyms(answer[0], answer[1])
+    decoy1, decoy2 = getDecoys(answer[0], answer[1])
 
     answer = f"{answer[0]}, {answer[1]}".lower()
     decoy1 = f"{decoy1[0]}, {decoy1[1]}".lower()
