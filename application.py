@@ -19,13 +19,11 @@ def getRandomLines(filename: str) -> str:
 def getDecoys(word1: str, word2: str) -> List[List[str]]:
     decoysForWord1 = PyDictionary().synonym(word1) + PyDictionary().antonym(word1)
     decoysForWord2 = PyDictionary().synonym(word2) + PyDictionary().antonym(word2)
-     
+
     decoysForWord1 = list(set(decoysForWord1))
     decoysForWord2 = list(set(decoysForWord2))
 
-    return list(
-        zip(random.sample(decoysForWord1, 2), random.sample(decoysForWord2, 2))
-    )
+    return list(zip(random.sample(decoysForWord1, 2), random.sample(decoysForWord2, 2)))
 
 
 def createQuestion() -> List[str]:

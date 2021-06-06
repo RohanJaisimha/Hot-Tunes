@@ -1,8 +1,6 @@
-from constants import ALBUM_NAME
-from constants import ARTIST
+from constants import ALBUMS_AND_ARTISTS
 from constants import CLIENT_ACCESS_TOKEN
 from constants import LYRICS_FOLDER_NAME
-from constants import LYRICS_JSON
 from constants import TEMPLATE_LYRICS_FILENAME
 
 import json
@@ -10,19 +8,9 @@ import lyricsgenius as genius
 import os
 
 
-def main():
-    if os.path.exists(LYRICS_JSON):
-        os.remove(LYRICS_JSON)
-
-    if not os.path.exists(LYRICS_FOLDER_NAME):
-        os.mkdir(LYRICS_FOLDER_NAME)
-
+def downloadLyrics(album: str, artist: str) -> None:
     api = genius.Genius(CLIENT_ACCESS_TOKEN)
-    api.search_album(ALBUM_NAME, ARTIST).save_lyrics()
-
-    fin = open(LYRICS_JSON, "r")
-    lyricsData = json.load(fin)
-    fin.close()
+    lyricsData = api.search_album(album, artist).to_dict()
 
     for track in lyricsData["tracks"]:
         songName = track["song"]["title_with_featured"]
@@ -37,8 +25,13 @@ def main():
         fout.write(lyrics)
         fout.close()
 
-    if os.path.exists(LYRICS_JSON):
-        os.remove(LYRICS_JSON)
+
+def main():
+    if not os.path.exists(LYRICS_FOLDER_NAME):
+        os.mkdir(LYRICS_FOLDER_NAME)
+
+    for album, artist in ALBUMS_AND_ARTISTS:
+        downloadLyrics(album, artist)
 
 
 if __name__ == "__main__":

@@ -24,6 +24,8 @@
         let answerGiven = document.querySelector("input[name='answerChoice']:checked").value;
         if (answerGiven === answer) {
             alert("You got it! Hit refresh to go again!");
+        } else {
+            alert("Sucks to suck! Try again!");
         }
     }
     function shuffle(arr) {
