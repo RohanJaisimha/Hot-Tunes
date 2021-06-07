@@ -23,7 +23,8 @@
     function checkAnswer() {
         let answerGiven = document.querySelector("input[name='answerChoice']:checked").value;
         if (answerGiven === answer) {
-            alert("You got it! Hit refresh to go again!");
+            alert("You got it! Click OK to go again!");
+            window.location.href = window.location.href;
         } else {
             alert("Sucks to suck! Try again!");
         }
