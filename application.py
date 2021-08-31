@@ -1,9 +1,12 @@
 from constants import LYRICS_FOLDER_NAME
 from flask import Flask, render_template
-import nltk
-nltk.download("wordnet")
 from nltk.corpus import wordnet
 from typing import List
+from typing import Set
+
+import nltk
+
+nltk.download("wordnet")
 import os
 import random
 import re
@@ -17,25 +20,30 @@ def getRandomLines(filename: str) -> str:
     randomIdx = random.randrange(0, len(lines) - 5)
     return " <br> ".join(lines[randomIdx : randomIdx + 5])
 
-def getSynonymsAndAntonyms(word: str) -> List[str]:
-    synonyms = []
-    antonyms = []
+
+def getSynonymsAndAntonyms(word: str) -> Set[str]:
+    synonyms = set()
+    antonyms = set()
 
     for syn in wordnet.synsets(word):
         for lem in syn.lemmas():
-            synonyms.append(lem.name())
+            synonyms.add(lem.name())
             if lem.antonyms():
-                antonyms.append(lem.antonyms()[0].name())
+                antonyms.add(lem.antonyms()[0].name())
 
-    return synonyms + antonyms
+    answer = synonyms | antonyms
+    if word in answer:
+        answer.remove(word)
+
+    return answer
 
 
 def getDecoys(word1: str, word2: str) -> List[List[str]]:
-    decoysForWord1 = getSynonymsAndAntonyms(word1) 
-    decoysForWord2 = getSynonymsAndAntonyms(word2) 
+    decoysForWord1 = getSynonymsAndAntonyms(word1)
+    decoysForWord2 = getSynonymsAndAntonyms(word2)
 
-    decoysForWord1 = list(set(decoysForWord1))
-    decoysForWord2 = list(set(decoysForWord2))
+    decoysForWord1 = list(decoysForWord1)
+    decoysForWord2 = list(decoysForWord2)
 
     return list(zip(random.sample(decoysForWord1, 2), random.sample(decoysForWord2, 2)))
 
@@ -74,7 +82,7 @@ def main():
     while not answer:
         try:
             answer, question, decoy1, decoy2 = createQuestion()
-        except:
+        except ValueError:
             pass
 
     return render_template(
