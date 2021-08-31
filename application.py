@@ -1,6 +1,8 @@
 from constants import LYRICS_FOLDER_NAME
 from flask import Flask, render_template
-from PyDictionary import PyDictionary
+import nltk
+nltk.download("wordnet")
+from nltk.corpus import wordnet
 from typing import List
 import os
 import random
@@ -15,10 +17,22 @@ def getRandomLines(filename: str) -> str:
     randomIdx = random.randrange(0, len(lines) - 5)
     return " <br> ".join(lines[randomIdx : randomIdx + 5])
 
+def getSynonymsAndAntonyms(word: str) -> List[str]:
+    synonyms = []
+    antonyms = []
+
+    for syn in wordnet.synsets(word):
+        for lem in syn.lemmas():
+            synonyms.append(lem.name())
+            if lem.antonyms():
+                antonyms.append(lem.antonyms()[0].name())
+
+    return synonyms + antonyms
+
 
 def getDecoys(word1: str, word2: str) -> List[List[str]]:
-    decoysForWord1 = PyDictionary().synonym(word1) + PyDictionary().antonym(word1)
-    decoysForWord2 = PyDictionary().synonym(word2) + PyDictionary().antonym(word2)
+    decoysForWord1 = getSynonymsAndAntonyms(word1) 
+    decoysForWord2 = getSynonymsAndAntonyms(word2) 
 
     decoysForWord1 = list(set(decoysForWord1))
     decoysForWord2 = list(set(decoysForWord2))
